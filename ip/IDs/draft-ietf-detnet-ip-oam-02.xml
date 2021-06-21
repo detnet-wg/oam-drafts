@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE rfc SYSTEM "rfc2629-xhtml.ent">
+<?rfc toc="yes"?>
+<?rfc tocompact="yes"?>
+<?rfc tocdepth="3"?>
+<?rfc tocindent="yes"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes"?>
+<?rfc comments="yes"?>
+<?rfc inline="yes"?>
+<?rfc compact="yes"?>
+<?rfc subcompact="no"?>
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="info" ipr="trust200902" docName="draft-ietf-detnet-ip-oam-02" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true" tocDepth="3" symRefs="true" sortRefs="true" version="3">
+  <!-- xml2rfc v2v3 conversion 3.6.0 -->
+  <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+
+<front>
+    <title abbrev="OAM for DetNet over IP">Operations, Administration and Maintenance (OAM) for Deterministic Networks (DetNet) with IP Data Plane</title>
+    <seriesInfo name="Internet-Draft" value="draft-ietf-detnet-ip-oam-02"/>
+    <author initials="G." surname="Mirsky" fullname="Greg Mirsky">
+      <organization>ZTE Corp.</organization>
+      <address>
+        <email>gregimirsky@gmail.com</email>
+        <email>gregory.mirsky@ztetx.com</email>
+      </address>
+    </author>
+    <author fullname="Mach(Guoyi) Chen" initials="M." surname="Chen">
+      <organization>Huawei</organization>
+      <address>
+        <postal>
+          <street/>
+          <city/>
+          <code/>
+          <country/>
+        </postal>
+        <email>mach.chen@huawei.com</email>
+      </address>
+    </author>
+    <author initials="D" surname="Black" fullname="David Black">
+      <organization>Dell EMC</organization>
+      <address>
+        <postal>
+          <street>176 South Street</street>
+          <city>Hopkinton, MA</city>
+          <code>01748</code>
+          <country>United States of America</country>
+        </postal>
+        <email>david.black@dell.com</email>
+      </address>
+    </author>
+    <date year="2021"/>
+    <area>Routing</area>
+    <workgroup>DetNet  Working Group</workgroup>
+    <keyword>Internet-Draft</keyword>
+    <keyword>DetNet</keyword>
+    <keyword>OAM</keyword>
+    <abstract>
+      <t>
+	   This document defines the principles for using Operations, Administration, and Maintenance protocols and mechanisms in the
+	   Deterministic Networking networks with the IP data plane.
+      </t>
+    </abstract>
+  </front>
+  <middle>
+    <section anchor="intro" numbered="true" toc="default">
+      <name>Introduction</name>
+      <t>
+   <xref target="RFC8655" format="default"/> introduces and explains Deterministic Networks (DetNet)
+   architecture.
+      </t>
+      <t>
+       Operations, Administration and Maintenance (OAM) protocols are used to detect, localize defects in the network,
+       and monitor network performance. Some OAM functions, e.g., failure detection, work in the 
+       network proactively, while others, e.g., defect localization, usually performed on-demand.
+       These tasks achieved by a combination of active and hybrid, as defined in <xref target="RFC7799" format="default"/>,
+       OAM methods.
+      </t>
+      <t>
+   <xref target="I-D.tpmb-detnet-oam-framework" format="default"/> lists the functional requirements toward OAM for DetNet domain. 
+   The list can further be used for gap analysis of available OAM tools to identify
+   possible enhancements of existing or whether new OAM tools are required to
+   support proactive and on-demand path monitoring and service validation.
+   Also, the document defines the  OAM use principals for the
+	   DetNet networks with the IP data plane.
+      </t>
+    </section>
+    <section numbered="true" toc="default">
+      <name>Conventions used in this document</name>
+      <section numbered="true" toc="default">
+        <name>Terminology</name>
+        <t>
+The term "DetNet OAM" used in this document interchangeably with longer version
+"set of OAM protocols, methods and tools for Deterministic Networks".
+</t>
+        <t>DetNet    Deterministic Networks</t>
+        <t>DiffServ   Differentiated Services</t>
+        <t>OAM:      Operations, Administration and Maintenance</t>
+        <t>PREF      Packet Replication and Elimination Function</t>
+        <t>POF        Packet Ordering Function</t>
+        <t>RDI         Remote Defect Indication</t>
+        <t>ICMP      Internet Control Message Protocol</t>
+        <t>   Underlay Network or Underlay Layer: The network that provides
+   connectivity between the DetNet nodes.  MPLS network providing LSP
+   connectivity between DetNet nodes is an example of the underlay layer.</t>
+        <t>DetNet Node - a node that is an actor in the DetNet domain. DetNet 
+   domain edge node and node that performs PREF within the domain are 
+   examples of DetNet node.</t>
+      </section>
+      <section numbered="true" toc="default">
+        <name>Keywords</name>
+        <t>
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+   NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED",
+   "MAY", and "OPTIONAL" in this document are to be interpreted as
+   described in BCP 14 <xref target="RFC2119" format="default"/> <xref target="RFC8174" format="default"/> 
+   when, and only when, they appear in all capitals, as shown here.
+        </t>
+      </section>
+    </section>
+    <section anchor="oam-data-plane" numbered="true" toc="default">
+      <name>Active OAM for DetNet Networks with the IP Data Plane</name>
+      <t>
+OAM protocols and mechanisms act within the data plane of the particular networking layer.
+And thus it is critical that the data plane encapsulation
+supports OAM mechanisms in such a way that DetNet OAM packets are in-band with a DetNet flow
+being monitored, i.e., DetNet OAM test packets follow precisely the same path as
+DetNet data plane traffic both for unidirectional and bi-directional DetNet paths. 
+</t>
+      <t>
+The DetNet data plane encapsulation in a transport network with IP encapsulations specified
+in Section 6 of <xref target="RFC8939" format="default"/>.
+For the IP underlay network, DetNet flows are identified
+by the ordered match to the provisioned information set that, among other elements, includes the IP protocol, source port number,
+destination port number. Active IP OAM
+protocols like Bidirectional Forwarding Detection (BFD) <xref target="RFC5880" format="default"/> or STAMP <xref target="RFC8762" format="default"/>,
+use UDP transport and the well-known UDP port numbers as the destination port. Thus a DetNet node MUST be
+able to associate an IP DetNet flow with the particular test session to ensure that test packets experience the
+same treatment as the DetNet flow packets.
+</t>
+      <t>
+Most of on-demand failure detection and localization in IP networks is being done by using the Internet Control Message Protocol (ICMP)
+Echo Request, Echo Reply and the set of defined error messages, e.g., Destination Unreachable, with the more detailed information provided through code points.
+<xref target="RFC0792" format="default"/> and <xref target="RFC4443" format="default"/> define the ICMP for IPv4 and IPv6 networks, respectively. Because ICMP is another IP protocol like, for example,
+UDP, a DetNet node MUST able to associate an ICMP packet generated by the specified IP DetNet node and addressed to the another IP DetnNet node
+with an IP DetNet flow between this pair of endpoints.
+</t>
+      <section anchor="ip-udp-section" numbered="true" toc="default">
+        <name>Active OAM Using DetNet-in-UDP Encapsulation</name>
+        <t>
+Active OAM in IP DetNet can be realized using DetNet-in-UDP encapsulation [Ed.note: Do we define it in this document or start a new one?].
+Using DetNet-in-UDP tunnel between IP DetNet nodes ensures that active OAM test packets are fate-sharing with the monitored
+IP DetNet flow packets. As a result, a test packet shares the tunnel with the IP DetNet flow and shares the fate, statistically speaking, of the IP DetNet flow being monitored.
+</t>
+      </section>
+      <section anchor="native-ip-section" numbered="true" toc="default">
+        <name>Mapping Active OAM and IP DetNet flows</name>
+        <t>
+IP OAM protocols that use UDP transport, e.g., BFD and STAMP, can be used to detect failures or performance degradation that affects an IP DetNet flow.
+When the UDP destination port number used by the OAM protocol is one of the assigned by IANA, then the UDP source port can be used to achieve co-routedness
+of OAM, and the monitored IP DetNet flow in the multipath environments, e.g., LAG or ECMP. To maximize the accuracy of OAM results in detecting failures and
+monitoring performance of IP DetNet, test packets should receive the same treatment by the nodes as experienced by the IP DetNet packet. Hence, the DSCP
+value used for a test packet MUST be mapped to DetNet.
+</t>
+      </section>
+      <section anchor="over-gre-section" numbered="true" toc="default">
+        <name>Active OAM Using GRE-in-UDP Encapsulation</name>
+        <t>
+<xref target="RFC8086" format="default"/> has defined the method of encapsulating GRE (Generic Routing Encapsulation) headers
+in UDP. GRE-in-UDP encapsulation can be used for IP DetNet OAM as it eases the task of mapping an OAM test session
+to a particular IP DetNet flow that is identified by N-tuple. Matching a GRE-in-UDP tunnel to the monitored IP DetNet flow
+enables the use of Y.1731/G.8013 <xref target="ITU-T.1731" format="default"/> as a comprehensive toolset of OAM. The Protocol Type field
+in GRE header MUST be set to 0x8902 assigned by IANA to IEEE 802.1ag Connectivity Fault Management (CFM) Protocol / ITU-T Recommendation Y.1731.
+Y.1731/G.8013 supports necessary for IP DetNet OAM functions, i.e., continuity check, one-way packet loss and packet delay measurement.
+</t>
+      </section>
+    </section>
+    <!--
+<section anchor="hybrid-oam" title="Use of Hybrid OAM in DetNet">
+<t>Hybrid OAM methods are used in performance monitoring and defined in <xref target="RFC7799"/> as:
+<list>
+<t>Hybrid Methods are Methods of Measurement that use a combination of
+   Active Methods and Passive Methods.</t>
+   </list>
+   A hybrid measurement method may produce metrics as close to passive,
+   but it still alters something in a data packet even if that is the value of a 
+   designated field in the packet encapsulation. One example of such a hybrid measurement method
+   is the Alternate Marking method (AMM) described in <xref target="RFC8321"/>. One of the advantages
+   of the use of AMM in a DetNet domain with the IP data plane is that the marking is applied to a data flow,
+   thus ensuring that measured metrics are directly applicable to the DetNet flow.
+   </t>
+</section>
+-->
+
+<section anchor="ip-over-tsn-sec" numbered="true" toc="default">
+      <name>OAM of DetNet IP Interworking with OAM of non-IP DetNet domains</name>
+      <t>
+A domain in which IP data plane provides DetNet service could be used
+in conjunction with a TSN and a DetNet domain with MPLS data plane to deliver end-to-end service.
+In such scenarios, the ability to detect defects and monitor performance using OAM is essential.
+<xref target="I-D.ietf-detnet-mpls-oam" format="default"/> identified two OAM interworking models - peering and tunneling.
+Interworking between DetNet domains with IP and MPLS data planes analyzed in Section 6.2 of <xref target="I-D.ietf-detnet-mpls-oam" format="default"/>.
+Also, requirements and recommendations for OAM interworking between a DetNet domain with MPLS data plane and OAM of a TSN
+equally apply to a DetNet domain with an IP data plane.
+</t>
+    </section>
+    <section anchor="iana-considerations" numbered="true" toc="default">
+      <name>IANA Considerations</name>
+      <t>
+  This document does not have any requests for IANA allocation. This section can be deleted before the publication of the draft.
+      </t>
+    </section>
+    <section anchor="security-considerations" numbered="true" toc="default">
+      <name>Security Considerations</name>
+      <t>
+   This document describes the applicability of the existing Fault Management and
+   Performance Monitoring IP OAM protocols,
+   and does not raise any security concerns or issues in addition to ones common to networking or
+   already documented for the referenced DetNet and OAM protocols.
+      </t>
+    </section>
+    <section anchor="ack" numbered="true" toc="default">
+      <name>Acknowledgment</name>
+      <t>
+TBA
+      </t>
+    </section>
+  </middle>
+  <back>
+    <!-- References split into informative and normative -->
+
+    <references>
+      <name>References</name>
+      <references>
+        <name>Normative References</name>
+        <xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"/>
+        <xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"/>
+        <xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.0792.xml"/>
+        <xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.4443.xml"/>
+        <xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8086.xml"/>
+        <xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8655.xml"/>
+        <xi:include href="https://datatracker.ietf.org/doc/bibxml3/draft-ietf-detnet-mpls-oam.xml"/>
+        <xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8939.xml"/>
+        <!--
+    <?rfc include="reference.RFC.6310"?>
+    <?rfc include="reference.RFC.7023"?>
+   <?rfc include="reference.I-D.ietf-detnet-ip-over-mpls"?>
+   <?rfc include="reference.I-D.ietf-detnet-ip-over-tsn"?>
+   -->
+    </references>
+      <references>
+        <name>Informational References</name>
+        <reference anchor="ITU-T.1731">
+          <front>
+            <title>Operations, administration and maintenance (OAM) functions and mechanisms for Ethernet-based networks</title>
+            <author>
+              <organization>ITU-T</organization>
+            </author>
+            <date month="August" year="2015"/>
+          </front>
+          <seriesInfo name="ITU-T" value="G.8013/Y.1731"/>
+        </reference>
+        <xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7799.xml"/>
+        <xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8762.xml"/>
+        <!-- <?rfc include="reference.RFC.8321"?> -->
+    <xi:include href="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5880.xml"/>
+        <xi:include href="https://datatracker.ietf.org/doc/bibxml3/draft-tpmb-detnet-oam-framework.xml"/>
+      </references>
+    </references>
+  </back>
+</rfc>

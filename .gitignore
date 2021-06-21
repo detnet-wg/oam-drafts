@@ -1,0 +1,8 @@
+/[a-z]*/*.html
+/[a-z]*/*.txt
+/[a-z]*/*.raw
+*.prev
+*.ed
+idnits
+*.out
+*~
