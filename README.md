@@ -1,4 +1,4 @@
-# DetNet Data Plane Drafts Repo
+# DetNet OAM Drafts Repo
 
 This is a repo used by the DetNet WG.
 See https://datatracker.ietf.org/wg/detnet/ for WG information.
