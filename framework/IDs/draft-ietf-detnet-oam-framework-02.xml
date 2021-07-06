@@ -12,7 +12,7 @@
 <?rfc subcompact="no"?>
 <?rfc authorship="yes"?>
 <?rfc tocappendix="yes"?>
-<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="info" ipr="trust200902" docName="draft-ietf-detnet-oam-framework-03" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true" tocDepth="3" symRefs="true" sortRefs="true" version="3">
+<rfc xmlns:xi="http://www.w3.org/2001/XInclude" category="info" ipr="trust200902" docName="draft-ietf-detnet-oam-framework-02" obsoletes="" updates="" submissionType="IETF" xml:lang="en" tocInclude="true" tocDepth="3" symRefs="true" sortRefs="true" version="3">
   <!-- xml2rfc v2v3 conversion 3.6.0 -->
   <front>
     <title abbrev="Framework of OAM for DetNet">Framework of Operations, Administration and Maintenance (OAM) for Deterministic Networking (DetNet)</title>
